@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metric Drop Analysis Framework</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .phase-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .phase-container.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .phase-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .phase-title {
+            font-size: 2.2em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .phase-emoji {
+            font-size: 1.2em;
+            margin-right: 10px;
+        }
+
+        .phase-goal {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .goal-emoji {
+            margin-right: 8px;
+        }
+
+        .content-section {
+            margin-top: 30px;
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .bullet-point:hover {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(5px);
+        }
+
+        .bullet-icon {
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 1.1em;
+            flex-shrink: 0;
+        }
+
+        .bullet-content {
+            flex: 1;
+        }
+
+        .bullet-title {
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .bullet-description {
+            color: #5a6c7d;
+            font-style: italic;
+            line-height: 1.4;
+        }
+
+        .phase-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin: 0 auto 20px auto;
+        }
+
+        @media (max-width: 768px) {
+            .phase-container {
+                padding: 25px;
+                margin: 10px;
+            }
+            
+            .phase-title {
+                font-size: 1.8em;
+            }
+            
+            .phase-goal {
+                font-size: 1em;
+                padding: 12px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navigation">
+        <button class="nav-btn active" onclick="showPhase(1)">Phase 1</button>
+        <button class="nav-btn" onclick="showPhase(2)">Phase 2</button>
+        <button class="nav-btn" onclick="showPhase(3)">Phase 3</button>
+        <button class="nav-btn" onclick="showPhase(4)">Phase 4</button>
+        <button class="nav-btn" onclick="showPhase(5)">Phase 5</button>
+        <button class="nav-btn" onclick="showPhase(6)">Phase 6</button>
+    </div>
+
+    <!-- Phase 1 -->
+    <div class="phase-container active" id="phase1">
+        <div class="phase-header">
+            <div class="phase-number">1</div>
+            <h1 class="phase-title">
+                <span class="phase-emoji">🔹</span>PHASE 1: Clarify the Business Problem
+            </h1>
+            <div class="phase-goal">
+                <span class="goal-emoji">🎯</span>Remove ambiguity and ensure you're solving the *right* problem.
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Timeframe</div>
+                    <div class="bullet-description">Weekly, monthly, quarterly trends?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Segments</div>
+                    <div class="bullet-description">New vs returning users, iOS vs Android, free vs paid?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Geo/Demographics</div>
+                    <div class="bullet-description">US-only? Urban users? English speakers?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Surface/Feature Scope</div>
+                    <div class="bullet-description">Is the drop in Feed, Search, or Notifications?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Business Impact</div>
+                    <div class="bullet-description">Is this hurting revenue, engagement, or retention?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Data Quality Check</div>
+                    <div class="bullet-description">Could this be a logging error or instrumentation bug?</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 2 -->
+    <div class="phase-container" id="phase2">
+        <div class="phase-header">
+            <div class="phase-number">2</div>
+            <h1 class="phase-title">
+                <span class="phase-emoji">🔹</span>PHASE 2: Map the Metric Structure
+            </h1>
+            <div class="phase-goal">
+                <span class="goal-emoji">🎯</span>Understand what builds the metric and where it could be breaking.
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Metric Formula</div>
+                    <div class="bullet-description">E.g., DAU = Unique users with 1+ session per day</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Input Drivers</div>
+                    <div class="bullet-description">Push opens, installs, session starts, page views?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Leading Indicators</div>
+                    <div class="bullet-description">Are fewer users searching, browsing, or clicking?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Conversion Funnel</div>
+                    <div class="bullet-description">Which step has increased drop-off?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Logs / Errors</div>
+                    <div class="bullet-description">Any spike in crash logs, API failures, or latency?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Recent Changes</div>
+                    <div class="bullet-description">SDK upgrades, backend rollouts, UI updates?</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 3 -->
+    <div class="phase-container" id="phase3">
+        <div class="phase-header">
+            <div class="phase-number">3</div>
+            <h1 class="phase-title">
+                <span class="phase-emoji">🔹</span>PHASE 3: Generate and Prioritize Hypotheses
+            </h1>
+            <div class="phase-goal">
+                <span class="goal-emoji">🎯</span>Create testable ideas across multiple root cause categories.
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Acquisition-related</div>
+                    <div class="bullet-description">Drop in installs, ads, app store ranking?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Retention-related</div>
+                    <div class="bullet-description">Broken engagement loop, poor content freshness?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Product/Platform Changes</div>
+                    <div class="bullet-description">Recent release or toggle causing friction?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">External/Environmental</div>
+                    <div class="bullet-description">Competitor launch, holidays, news event?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Motivational/Value Loss</div>
+                    <div class="bullet-description">Has the core value prop degraded?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Compounding Factors</div>
+                    <div class="bullet-description">Multiple changes interacting negatively?</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 4 -->
+    <div class="phase-container" id="phase4">
+        <div class="phase-header">
+            <div class="phase-number">4</div>
+            <h1 class="phase-title">
+                <span class="phase-emoji">🔹</span>PHASE 4: Turn Hypotheses into Analytical Questions
+            </h1>
+            <div class="phase-goal">
+                <span class="goal-emoji">🎯</span>Convert guesses into measurable, focused queries.
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Funnel Drop-Off</div>
+                    <div class="bullet-description">Where in the journey are users leaving?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Segmentation by Cohort</div>
+                    <div class="bullet-description">Is one user group disproportionately affected?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Platform-Based Impact</div>
+                    <div class="bullet-description">Is Android dropping but not iOS?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Cohort Time Series</div>
+                    <div class="bullet-description">Did users who joined in May behave differently?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Experiment Analysis</div>
+                    <div class="bullet-description">Did A/B group behavior shift post-launch?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Top User Journey Comparison</div>
+                    <div class="bullet-description">What's different in retained vs churned flows?</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 5 -->
+    <div class="phase-container" id="phase5">
+        <div class="phase-header">
+            <div class="phase-number">5</div>
+            <h1 class="phase-title">
+                <span class="phase-emoji">🔹</span>PHASE 5: Choose the Right Analytical Methods
+            </h1>
+            <div class="phase-goal">
+                <span class="goal-emoji">🎯</span>Apply the correct tool to each analytical question.
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Time Series/Anomaly Detection</div>
+                    <div class="bullet-description">Line charts, moving averages, seasonal shifts?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Segmentation Tables</div>
+                    <div class="bullet-description">Break down by country, platform, traffic source?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Retention Curves</div>
+                    <div class="bullet-description">D1, D7, D30 stickiness for recent cohorts?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Funnel Visualization</div>
+                    <div class="bullet-description">Step-wise drop across signup, search, convert?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Correlation/Causality Checks</div>
+                    <div class="bullet-description">Did the metric drop only after rollout X?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Counterfactual/Baseline Comparison</div>
+                    <div class="bullet-description">How would metric have moved without this event?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Churned User Behavior</div>
+                    <div class="bullet-description">Where did users drop off and why?</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Phase 6 -->
+    <div class="phase-container" id="phase6">
+        <div class="phase-header">
+            <div class="phase-number">6</div>
+            <h1 class="phase-title">
+                <span class="phase-emoji">🔹</span>PHASE 6: Recommend Actions
+            </h1>
+            <div class="phase-goal">
+                <span class="goal-emoji">🎯</span>Move from insights to decisions and fixes.
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Short-term Fixes</div>
+                    <div class="bullet-description">Rollback version, fix onboarding, patch crash bug?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Long-term Tests</div>
+                    <div class="bullet-description">Redesign feature, A/B test new flow, improve UX?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Follow-Up Metric</div>
+                    <div class="bullet-description">What shows the fix worked (e.g. DAU recovery, bounce rate drop)?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Experiment Design</div>
+                    <div class="bullet-description">How will you validate if your fix caused the recovery?</div>
+                </div>
+            </div>
+            
+            <div class="bullet-point">
+                <div class="bullet-icon">•</div>
+                <div class="bullet-content">
+                    <div class="bullet-title">Monitoring Strategy</div>
+                    <div class="bullet-description">What should you track post-launch to ensure no regression?</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPhase(phaseNumber) {
+            // Hide all phases
+            const phases = document.querySelectorAll('.phase-container');
+            phases.forEach(phase => phase.classList.remove('active'));
+            
+            // Remove active class from all navigation buttons
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected phase
+            document.getElementById(`phase${phaseNumber}`).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
